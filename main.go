@@ -5,16 +5,19 @@ package main
 // Somewhat like ``pip search PACKAGE``
 // I want to install glide, how to not google?
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
 var found bool
 var wanted string
+var categoryFlag = flag.String("c", "", "Search category instead.")
 
 type Package struct {
 	name     string
@@ -65,6 +68,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot read file")
 	}
+
+	flag.Parse()
+
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: gosearch PACKAGENAME")
 		os.Exit(1)
@@ -72,12 +78,14 @@ func main() {
 
 	var matched, containsLink, noDescription bool
 	var category string
+	var categories = map[string]int{}
 
 	lines := strings.Split(string(rawdata), "\n")
 	for _, line := range lines {
 		line = strings.Trim(line, " ")
 		if strings.HasPrefix(line, "## ") {
 			category = strings.ToLower(line[3:])
+			categories[category] = 0
 		}
 		containsLink = reContainsLink.MatchString(line)
 		if containsLink {
@@ -96,23 +104,47 @@ func main() {
 				right := tmp[0][2]
 				pkg := getNameAndDesc(left, right)
 				pkg.category = category
-				wanted = os.Args[1]
 
-				if wanted == pkg.name || wanted == pkg.category {
-					// TODO use separated command for search category
+				categories[pkg.category] += 1
+
+				if *categoryFlag != "" {
+					if *categoryFlag == "all" {
+						found = true
+						// defer print result before exitting
+					}
+					if *categoryFlag == pkg.category {
+						fmt.Printf("%s - %s\n", pkg.pkg, pkg.desc)
+						found = true
+					}
+				} else {
+
+					wanted = flag.Args()[0]
 					if wanted == pkg.name {
 						fmt.Printf("Package: %s\n", pkg.pkg)
 						fmt.Printf("Section: %s\n", pkg.category)
 						fmt.Printf("Description-en: %s\n", pkg.desc)
-					} else {
-						fmt.Printf("%s - %s\n", pkg.pkg, pkg.desc)
-					}
 
-					found = true
+						found = true
+					}
 				}
 			}
 
 		}
+	}
+
+	if *categoryFlag == "all" {
+		var cats []string
+
+		for k, _ := range categories {
+			cats = append(cats, k)
+		}
+		sort.Strings(cats)
+
+		for _, k := range cats {
+			fmt.Printf("%s: %d packages\n", k, categories[k])
+
+		}
+
 	}
 
 	if !found {
