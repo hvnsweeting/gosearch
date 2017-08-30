@@ -7,7 +7,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -38,9 +37,6 @@ func getNameAndDesc(left string, right string) Package {
 	return Package{pkg: pkg, name: name, desc: right}
 }
 
-// TODO convert MD to in-source data
-// gosearch glide
-// gosearch show glide # show desc
 var (
 	reContainsLink        = regexp.MustCompile(`\* \[.*\]\(.*\)`)
 	reOnlyLink            = regexp.MustCompile(`\* \[.*\]\(.*\)$`)
@@ -63,8 +59,7 @@ gobuffalo.io
 rest-layer.io
 */
 func main() {
-	rawdata, err := ioutil.ReadFile("/home/hvn/go/src/github.com/hvnsweeting/gosearch/goawesome.md")
-
+	rawdata, err := Asset("data/README.md")
 	if err != nil {
 		log.Fatal("Cannot read file")
 	}
