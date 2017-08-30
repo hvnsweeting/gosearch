@@ -60,9 +60,6 @@ gobuffalo.io
 rest-layer.io
 */
 func main() {
-	// Read file
-	// Parse package name
-	// search base on pkg name, then user
 	rawdata, err := ioutil.ReadFile("/home/hvn/go/src/github.com/hvnsweeting/gosearch/goawesome.md")
 
 	if err != nil {
@@ -74,9 +71,14 @@ func main() {
 	}
 
 	var matched, containsLink, noDescription bool
+	var category string
+
 	lines := strings.Split(string(rawdata), "\n")
 	for _, line := range lines {
 		line = strings.Trim(line, " ")
+		if strings.HasPrefix(line, "## ") {
+			category = strings.ToLower(line[3:])
+		}
 		containsLink = reContainsLink.MatchString(line)
 		if containsLink {
 			noDescription = reOnlyLink.MatchString(line)
@@ -89,18 +91,23 @@ func main() {
 				// fmt.Printf("WARNING bad entry %s\n", line)
 			} else {
 				// * [zeus](https://github.com/daryl/zeus)
-				//	fmt.Println(line)
 				tmp := reLinkWithDescription.FindAllStringSubmatch(line, 3)
 				left := tmp[0][1]
 				right := tmp[0][2]
-				//fmt.Println(tmp[0][1], len(tmp))
-				// return
 				pkg := getNameAndDesc(left, right)
+				pkg.category = category
 				wanted = os.Args[1]
-				// fmt.Println(pkg.pkg)
 
-				if wanted == pkg.name {
-					fmt.Println(pkg.pkg)
+				if wanted == pkg.name || wanted == pkg.category {
+					// TODO use separated command for search category
+					if wanted == pkg.name {
+						fmt.Printf("Package: %s\n", pkg.pkg)
+						fmt.Printf("Section: %s\n", pkg.category)
+						fmt.Printf("Description-en: %s\n", pkg.desc)
+					} else {
+						fmt.Printf("%s - %s\n", pkg.pkg, pkg.desc)
+					}
+
 					found = true
 				}
 			}
