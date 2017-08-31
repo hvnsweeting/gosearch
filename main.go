@@ -75,7 +75,7 @@ func main() {
 	flag.Usage = myUsage
 	rawdata, err := rawData()
 	if err != nil {
-		log.Fatal("Cannot read file")
+		log.Fatal("Cannot read data")
 	}
 
 	flag.Parse()
