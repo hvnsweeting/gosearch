@@ -136,7 +136,7 @@ func main() {
 
 					if wanted == pkg.name {
 						fmt.Printf("Package: %s\n", pkg.pkg)
-						fmt.Printf("Section: %s\n", pkg.category)
+						fmt.Printf("Category: %s\n", pkg.category)
 						fmt.Printf("Description-en: %s\n", pkg.desc)
 
 						found = true
