@@ -1,10 +1,5 @@
 package main
 
-// I want to install glide, I don't remember its full packagename, how to not google?
-
-// Search packages base on name
-// Then use result as output for go get -u
-// Somewhat like ``pip search PACKAGE``
 import (
 	"flag"
 	"fmt"
@@ -14,6 +9,8 @@ import (
 	"sort"
 	"strings"
 )
+
+var version = "0.1.0"
 
 // TODO handle non package links
 /*
