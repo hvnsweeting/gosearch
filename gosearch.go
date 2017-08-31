@@ -11,6 +11,7 @@ import (
 )
 
 var version = "0.1.0"
+var awesomeVersion = "https://github.com/avelino/awesome-go/commit/3d9d9d0d3c770d4fdbf0ff239dabfbfe4bafee19"
 
 // TODO handle non package links
 /*
@@ -30,7 +31,8 @@ rest-layer.io
 var found bool
 var wanted string
 var categoryFlag = flag.String("c", "", "Show packages in `category`. Use `all` for list of all categories.")
-var rawFlag = flag.Bool("r", false, "Show the raw data of Awesome-go")
+var rawFlag = flag.Bool("r", false, "Show the raw data of Awesome-go.")
+var versionFlag = flag.Bool("v", false, "Print the version.")
 
 type Package struct {
 	name     string
@@ -132,6 +134,7 @@ func main() {
 
 	flag.Parse()
 
+	// -r
 	lines := strings.Split(string(rawdata), "\n")
 	if *rawFlag {
 		for _, line := range lines {
@@ -140,6 +143,14 @@ func main() {
 		return
 	}
 
+	// -v
+	if *versionFlag {
+		fmt.Printf("gosearch version %s.\n", version)
+		fmt.Printf("Built with data from %s\n", awesomeVersion)
+		return
+	}
+
+	// -c or no option passed.
 	var pkgs []Package
 	if *categoryFlag != "" {
 		wanted = *categoryFlag
