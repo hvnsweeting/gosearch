@@ -17,6 +17,7 @@ import (
 var found bool
 var wanted string
 var categoryFlag = flag.String("c", "", "Search category instead.")
+var rawFlag = flag.Bool("r", false, "Show the raw data of Awesome-go")
 
 type Package struct {
 	name     string
@@ -58,8 +59,13 @@ aahframework.org
 gobuffalo.io
 rest-layer.io
 */
+func rawData() (rawdata []byte, err error) {
+	rawdata, err = Asset("data/README.md")
+	return rawdata, err
+}
+
 func main() {
-	rawdata, err := Asset("data/README.md")
+	rawdata, err := rawData()
 	if err != nil {
 		log.Fatal("Cannot read file")
 	}
@@ -76,6 +82,13 @@ func main() {
 	var categories = map[string]int{}
 
 	lines := strings.Split(string(rawdata), "\n")
+	if *rawFlag {
+		for _, line := range lines {
+			fmt.Println(line)
+		}
+		return
+	}
+
 	for _, line := range lines {
 		line = strings.Trim(line, " ")
 		if strings.HasPrefix(line, "## ") {
