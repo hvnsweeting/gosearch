@@ -16,7 +16,7 @@ import (
 
 var found bool
 var wanted string
-var categoryFlag = flag.String("c", "", "Search category instead.")
+var categoryFlag = flag.String("c", "", "Show packages in `category`. Use `all` for list of all categories.")
 var rawFlag = flag.Bool("r", false, "Show the raw data of Awesome-go")
 
 type Package struct {
@@ -63,19 +63,21 @@ func rawData() (rawdata []byte, err error) {
 	rawdata, err = Asset("data/README.md")
 	return rawdata, err
 }
+func myUsage() {
+	fmt.Printf("Usage: %s packagename \n", os.Args[0])
+	fmt.Printf("       %s [OPTIONS] [OPTIONS arguments] \n\n", os.Args[0])
+	fmt.Printf("Options:\n")
+	flag.PrintDefaults()
+}
 
 func main() {
+	flag.Usage = myUsage
 	rawdata, err := rawData()
 	if err != nil {
 		log.Fatal("Cannot read file")
 	}
 
 	flag.Parse()
-
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: gosearch PACKAGENAME")
-		os.Exit(1)
-	}
 
 	var matched, containsLink, noDescription bool
 	var category string
@@ -126,7 +128,12 @@ func main() {
 					}
 				} else {
 
+					if flag.NArg() == 0 {
+						flag.Usage()
+						os.Exit(1)
+					}
 					wanted = flag.Args()[0]
+
 					if wanted == pkg.name {
 						fmt.Printf("Package: %s\n", pkg.pkg)
 						fmt.Printf("Section: %s\n", pkg.category)
