@@ -1,7 +1,8 @@
-# gosearch
-The *awesome* missing package explorer for Golang. [![Build Status](https://travis-ci.org/hvnsweeting/gosearch.svg?branch=master)](https://travis-ci.org/hvnsweeting/gosearch)
+# gosearch: The awesome package explorer for Golang
+[![Build Status](https://travis-ci.org/hvnsweeting/gosearch.svg?branch=master)](https://travis-ci.org/hvnsweeting/gosearch)
 
-`gosearch` turn the [awesome-go](https://github.com/avelino/awesome-go) into a CLI command that you can search, discover offline easily.
+`gosearch` turns the [awesome-go](https://github.com/avelino/awesome-go) into a
+CLI command that you can search for packages offline easily.
 
 ## Why this?
 I've back to coding Golang after a long time off.
@@ -15,7 +16,7 @@ Inspired by [Python pip](https://pip.pypa.io/en/stable/).
 ## Install
 
 ```
-go get -u github.com/hvnsweeting/gosearch
+$ go get -u github.com/hvnsweeting/gosearch
 ```
 
 ## Usage
