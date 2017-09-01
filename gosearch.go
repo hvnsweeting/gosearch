@@ -104,6 +104,11 @@ func searchPackage(wanted string, lines []string, filter Filter) []Package {
 	for _, line := range lines {
 		line = strings.Trim(line, " ")
 
+		// From here goes down, there is no package
+		if strings.HasPrefix(line, "## Conferences") {
+			break
+		}
+
 		if strings.HasPrefix(line, "## ") {
 			category = strings.ToLower(line[3:])
 		}
