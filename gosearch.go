@@ -59,7 +59,7 @@ func getNameAndDesc(left string, right string) Package {
 		if err != nil {
 			log.Fatal("Cannot parse URL:", pkgurl)
 		}
-		pkg = path.Join(u.Hostname(), u.Path)
+		pkg = path.Join(u.Host, u.Path)
 	} else {
 		log.Fatal("Malformed URL: ", left)
 	}
