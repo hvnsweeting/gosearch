@@ -17,3 +17,7 @@ install: build
 	go install .
 
 ci: install integrate
+
+data:
+	./updatedata.sh
+.PHONY: data
