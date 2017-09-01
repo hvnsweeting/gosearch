@@ -4,7 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
+	"path"
 	"regexp"
 	"sort"
 	"strings"
@@ -34,6 +36,13 @@ var categoryFlag = flag.String("c", "", "Show packages in `category`. Use `all` 
 var rawFlag = flag.Bool("r", false, "Show the raw data of Awesome-go.")
 var versionFlag = flag.Bool("v", false, "Print the version.")
 
+var (
+	reContainsLink        = regexp.MustCompile(`\* \[.*\]\(.*\)`)
+	reOnlyLink            = regexp.MustCompile(`\* \[.*\]\(.*\)$`)
+	reLinkWithDescription = regexp.MustCompile(`\* (\[.*\]\(.*\)) - (\S.*)`)
+	reMDLink              = regexp.MustCompile(`\[.*\]\(([^\)]+)\)`)
+)
+
 type Package struct {
 	name     string
 	pkg      string
@@ -42,22 +51,23 @@ type Package struct {
 }
 
 func getNameAndDesc(left string, right string) Package {
-	// use LastIndex as string inside [name] can contain (), e.g hipchat (xmpp)
-	open := strings.LastIndex(left, "(")
-	close := strings.LastIndex(left, ")")
-	pkg := left[open+1 : close]
-	pkg = strings.Trim(pkg, "/")
-	pkg = pkg[strings.Index(pkg, "://")+3:]
+	var pkg string
+	if reMDLink.MatchString(left) {
+		matches := reMDLink.FindAllStringSubmatch(left, 1)
+		pkgurl := matches[0][1]
+		u, err := url.Parse(pkgurl)
+		if err != nil {
+			log.Fatal("Cannot parse URL:", pkgurl)
+		}
+		pkg = path.Join(u.Hostname(), u.Path)
+	} else {
+		log.Fatal("Malformed URL: ", left)
+	}
 
 	name := pkg[strings.LastIndex(pkg, "/")+1:]
+
 	return Package{pkg: pkg, name: name, desc: right}
 }
-
-var (
-	reContainsLink        = regexp.MustCompile(`\* \[.*\]\(.*\)`)
-	reOnlyLink            = regexp.MustCompile(`\* \[.*\]\(.*\)$`)
-	reLinkWithDescription = regexp.MustCompile(`\* (\[.*\]\(.*\)) - (\S.*)`)
-)
 
 func rawData() (rawdata []byte, err error) {
 	rawdata, err = Asset("data/README.md")
@@ -93,6 +103,7 @@ func searchPackage(wanted string, lines []string, filter Filter) []Package {
 	var pkgs []Package
 	for _, line := range lines {
 		line = strings.Trim(line, " ")
+
 		if strings.HasPrefix(line, "## ") {
 			category = strings.ToLower(line[3:])
 		}
