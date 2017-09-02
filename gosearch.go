@@ -38,7 +38,7 @@ var versionFlag = flag.Bool("v", false, "Print the version.")
 
 var (
 	reContainsLink        = regexp.MustCompile(`\* \[.*\]\(.*\)`)
-	reOnlyLink            = regexp.MustCompile(`\* \[.*\]\(.*\)$`)
+	reOnlyLink            = regexp.MustCompile(`\* \[[^\]]+\]\([^\)]+\)$`)
 	reLinkWithDescription = regexp.MustCompile(`\* (\[.*\]\(.*\)) - (\S.*)`)
 	reMDLink              = regexp.MustCompile(`\[.*\]\(([^\)]+)\)`)
 )
