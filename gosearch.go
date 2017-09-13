@@ -37,10 +37,10 @@ var rawFlag = flag.Bool("r", false, "Show the raw data of Awesome-go.")
 var versionFlag = flag.Bool("v", false, "Print the version.")
 
 var (
-	reContainsLink        = regexp.MustCompile(`\* \[.*\]\(.*\)`)
+	reContainsLink        = regexp.MustCompile(`\* \[[^\]]+\]\([^\)]+\)`)
 	reOnlyLink            = regexp.MustCompile(`\* \[[^\]]+\]\([^\)]+\)$`)
-	reLinkWithDescription = regexp.MustCompile(`\* (\[.*\]\(.*\)) - (\S.*)`)
-	reMDLink              = regexp.MustCompile(`\[.*\]\(([^\)]+)\)`)
+	reLinkWithDescription = regexp.MustCompile(`\* (\[[^\]]+\]\(.*\))[^ ]* - (\S.+)`)
+	reMDLink              = regexp.MustCompile(`\[[^\]]+\]\(([^\)]+)\)`)
 )
 
 type Package struct {
