@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 set -x
 go get -u github.com/avelino/awesome-go
 AWESOME_DIR="$(go list -f '{{ .Dir }}' github.com/avelino/awesome-go)"
