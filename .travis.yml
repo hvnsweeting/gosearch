@@ -4,7 +4,8 @@ go:
   - 1.5
   - 1.6
   - 1.7
-  - tip
+  - 1.8
+  - 1.9
 
 # Setting sudo access to false will let Travis CI use containers rather than
 # VMs to run the tests. For more details see:
