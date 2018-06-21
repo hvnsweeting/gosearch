@@ -45,19 +45,19 @@ func TestRegex(t *testing.T) {
 		}
 		linkMatched := reContainsLinkGreedy.MatchString(line)
 		if reContainsLink.MatchString(line) != linkMatched {
-			t.Errorf("FAILContainsLink %s", line, linkMatched)
+			t.Errorf("FAILContainsLink %s %v", line, linkMatched)
 		}
 
 		linkWithDescMatched := reLinkWithDescriptionGreedy.MatchString(line)
 		if reLinkWithDescription.MatchString(line) != linkWithDescMatched {
 			t.Errorf("%v", reLinkWithDescription.FindStringSubmatch(line))
-			t.Errorf("FAILLinkWithDesc %s", line, linkWithDescMatched)
+			t.Errorf("FAILLinkWithDesc %s %v", line, linkWithDescMatched)
 
 		}
 		mdLinkMatched := reMDLink.MatchString(line)
 		if reMDLinkGreedy.MatchString(line) != mdLinkMatched {
 			t.Errorf("%v", reMDLinkGreedy.FindStringSubmatch(line))
-			t.Errorf("FAILLMDlink %s", line, mdLinkMatched)
+			t.Errorf("FAILLMDlink %s %v", line, mdLinkMatched)
 
 		}
 
